@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AutoLux Cars | My Cart</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { background: #f1f5f9; color: #0f172a; }
+    .navbar { background: #111827; }
+    .navbar-brand, .nav-link { color: #fff !important; }
+    .cart-card { border-radius: 24px; background: #fff; box-shadow: 0 25px 50px rgba(15, 23, 42, .08); }
+    .btn-clear { background: #ef4444; border: none; }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark sticky-top shadow-sm">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="home.html">AutoLux Cars</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu" aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navMenu">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link" href="home.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+          <li class="nav-item"><a class="nav-link" href="login.html">Login</a></li>
+          <li class="nav-item"><a class="nav-link" href="register.html">Register</a></li>
+          <li class="nav-item"><a class="nav-link" href="profile.html">Profile</a></li>
+          <li class="nav-item"><a class="nav-link active" href="cart.html">My Cart</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <section class="container py-5">
+    <div class="row">
+      <div class="col-lg-8">
+        <div class="cart-card p-4 mb-4">
+          <h3 class="fw-bold mb-3">My Cart</h3>
+          <div id="cartItems"></div>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="cart-card p-4">
+          <h5 class="fw-bold mb-3">Order summary</h5>
+          <div id="orderSummary" class="mb-4"></div>
+          <button id="clearCart" class="btn btn-clear w-100 mb-3">Clear cart</button>
+          <a href="checkout.html" class="btn btn-primary w-100">Proceed to checkout</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="text-center py-4 text-muted">
+    <div class="container">AutoLux Cars shopping cart with localStorage persistence.</div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const productList = [
+      { id: 1, model: 'Aurora GT', price: 79999, image: 'https://images.pexels.com/photos/170811/pexels-photo-170811.jpeg?auto=compress&cs=tinysrgb&w=900' },
+      { id: 2, model: 'Summit X', price: 65999, image: 'https://images.pexels.com/photos/210019/pexels-photo-210019.jpeg?auto=compress&cs=tinysrgb&w=900' },
+      { id: 3, model: 'Zenith EV', price: 88999, image: 'https://images.pexels.com/photos/358070/pexels-photo-358070.jpeg?auto=compress&cs=tinysrgb&w=900' }
+    ];
+
+    function getCart() {
+      return JSON.parse(localStorage.getItem('autolux-cart') || '[]');
+    }
+
+    function saveCart(cart) {
+      localStorage.setItem('autolux-cart', JSON.stringify(cart));
+      renderCart();
+    }
+
+    function removeItem(id) {
+      let cart = getCart().filter(item => item.id !== id);
+      saveCart(cart);
+    }
+
+    function clearCartItems() {
+      if (!confirm('Remove all items from your cart?')) return;
+      saveCart([]);
+      alert('Your cart is now empty.');
+    }
+
+    function renderCart() {
+      const cart = getCart();
+      const cartItemsContainer = document.getElementById('cartItems');
+      const summary = document.getElementById('orderSummary');
+      cartItemsContainer.innerHTML = '';
+      if (cart.length === 0) {
+        cartItemsContainer.innerHTML = '<p class="text-muted">Your cart is empty. Browse the home page and add premium cars to your cart.</p>';
+        summary.innerHTML = '<p class="text-muted">No items selected yet.</p>';
+        return;
+      }
+      let total = 0;
+      cart.forEach(item => {
+        const product = productList.find(p => p.id === item.id);
+        if (!product) return;
+        const subtotal = product.price * item.quantity;
+        total += subtotal;
+        const content = document.createElement('div');
+        content.className = 'd-flex align-items-center mb-4';
+        content.innerHTML = `
+          <img src="${product.image}" alt="${product.model}" class="rounded-4 me-3" width="96" height="64">
+          <div class="flex-grow-1">
+            <h6 class="mb-1">${product.model}</h6>
+            <p class="mb-1 text-muted">Qty: ${item.quantity} · $${product.price.toLocaleString()} each</p>
+            <strong>$${subtotal.toLocaleString()}</strong>
+          </div>
+          <button onclick="removeItem(${product.id})" class="btn btn-outline-danger btn-sm">Remove</button>
+        `;
+        cartItemsContainer.appendChild(content);
+      });
+      summary.innerHTML = `
+        <div class="d-flex justify-content-between mb-2"><span>Items</span><span>${cart.length}</span></div>
+        <div class="d-flex justify-content-between mb-2"><span>Delivery</span><span>$499</span></div>
+        <div class="d-flex justify-content-between fw-bold mt-3"><span>Total</span><span>$${(total + 499).toLocaleString()}</span></div>
+      `;
+    }
+
+    document.getElementById('clearCart').addEventListener('click', clearCartItems);
+    renderCart();
+  </script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AutoLux Cars | Register</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { min-height: 100vh; background: linear-gradient(135deg, #eef2ff 0%, #f8fafc 100%); color: #0f172a; }
+    .navbar { background: #111827; }
+    .navbar-brand, .nav-link { color: #fff !important; }
+    .auth-card { border-radius: 24px; background: #fff; box-shadow: 0 25px 50px rgba(15, 23, 42, .1); }
+    .btn-primary { background: #0ea5e9; border: none; }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark sticky-top shadow-sm">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="home.html">AutoLux Cars</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu" aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navMenu">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link" href="home.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+          <li class="nav-item"><a class="nav-link" href="login.html">Login</a></li>
+          <li class="nav-item"><a class="nav-link active" href="register.html">Register</a></li>
+          <li class="nav-item"><a class="nav-link" href="profile.html">Profile</a></li>
+          <li class="nav-item"><a class="nav-link" href="cart.html">My Cart</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <section class="d-flex align-items-center justify-content-center py-5">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+          <div class="auth-card p-5">
+            <h2 class="fw-bold mb-3">Create your AutoLux account</h2>
+            <p class="text-muted mb-4">Register now to save favorites, track your cart, and get priority support.</p>
+            <form id="registerForm" novalidate>
+              <div class="mb-3">
+                <label for="name" class="form-label">Full name</label>
+                <input type="text" id="name" class="form-control" placeholder="John Doe">
+                <div class="invalid-feedback">Your full name is required.</div>
+              </div>
+              <div class="mb-3">
+                <label for="email" class="form-label">Email address</label>
+                <input type="email" id="email" class="form-control" placeholder="name@example.com">
+                <div class="invalid-feedback">Enter a valid email address.</div>
+              </div>
+              <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" id="password" class="form-control" placeholder="Minimum 6 characters">
+                <div class="invalid-feedback">Password must be at least 6 characters.</div>
+              </div>
+              <div class="mb-3">
+                <label for="confirmPassword" class="form-label">Confirm password</label>
+                <input type="password" id="confirmPassword" class="form-control" placeholder="Confirm your password">
+                <div class="invalid-feedback">Passwords must match.</div>
+              </div>
+              <button type="submit" class="btn btn-primary w-100">Register</button>
+            </form>
+            <p class="mt-4 text-center text-muted">Already have an account? <a href="login.html">Login here</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="text-center py-4 text-muted">
+    <div class="container">AutoLux Cars - Responsive registration page with JavaScript validation.</div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const registerForm = document.getElementById('registerForm');
+    registerForm.addEventListener('submit', function (event) {
+      event.preventDefault();
+      const name = document.getElementById('name');
+      const email = document.getElementById('email');
+      const password = document.getElementById('password');
+      const confirmPassword = document.getElementById('confirmPassword');
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      const validName = name.value.trim().length >= 3;
+      const validEmail = emailPattern.test(email.value.trim());
+      const validPassword = password.value.trim().length >= 6;
+      const passwordsMatch = password.value === confirmPassword.value && validPassword;
+
+      name.classList.toggle('is-invalid', !validName);
+      email.classList.toggle('is-invalid', !validEmail);
+      password.classList.toggle('is-invalid', !validPassword);
+      confirmPassword.classList.toggle('is-invalid', !passwordsMatch);
+
+      if (!validName || !validEmail || !validPassword || !passwordsMatch) {
+        return;
+      }
+
+      const users = JSON.parse(localStorage.getItem('autolux-users') || '[]');
+      const existing = users.some(user => user.email.toLowerCase() === email.value.trim().toLowerCase());
+      if (existing) {
+        alert('An account already exists with that email address. Please login or use a different email.');
+        return;
+      }
+
+      users.push({ name: name.value.trim(), email: email.value.trim(), password: password.value });
+      localStorage.setItem('autolux-users', JSON.stringify(users));
+      localStorage.setItem('autolux-current-user', JSON.stringify({ name: name.value.trim(), email: email.value.trim() }));
+      alert('Registration successful! Redirecting to your profile.');
+      window.location.href = 'profile.html';
+    });
+  </script>
+</body>
+</html>
