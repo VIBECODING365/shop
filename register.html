@@ -11,18 +11,33 @@
     .navbar-brand, .nav-link { color: #fff !important; }
     .auth-card { border-radius: 24px; background: #fff; box-shadow: 0 25px 50px rgba(15, 23, 42, .1); }
     .btn-primary { background: #0ea5e9; border: none; }
+    .password-strength { margin-top: 8px; height: 6px; border-radius: 3px; background: #e2e8f0; }
+    .strength-weak { background: #ef4444; }
+    .strength-fair { background: #f97316; }
+    .strength-good { background: #eab308; }
+    .strength-strong { background: #84cc16; }
+    .strength-very-strong { background: #22c55e; }
+    .strength-text { font-size: 0.85rem; margin-top: 4px; }
+    .strength-weak-text { color: #ef4444; font-weight: 600; }
+    .strength-fair-text { color: #f97316; font-weight: 600; }
+    .strength-good-text { color: #eab308; font-weight: 600; }
+    .strength-strong-text { color: #84cc16; font-weight: 600; }
+    .strength-very-strong-text { color: #22c55e; font-weight: 600; }
+    .form-text { font-size: 0.875rem; margin-top: 4px; }
+    .valid-icon { color: #22c55e; margin-right: 4px; }
+    .invalid-icon { color: #ef4444; margin-right: 4px; }
   </style>
 </head>
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark sticky-top shadow-sm">
     <div class="container">
-      <a class="navbar-brand fw-bold" href="home.html">AutoLux Cars</a>
+      <a class="navbar-brand fw-bold" href="index.html">AutoLux Cars</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu" aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navMenu">
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-          <li class="nav-item"><a class="nav-link" href="home.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
           <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
           <li class="nav-item"><a class="nav-link" href="login.html">Login</a></li>
           <li class="nav-item"><a class="nav-link active" href="register.html">Register</a></li>
@@ -44,22 +59,27 @@
               <div class="mb-3">
                 <label for="name" class="form-label">Full name</label>
                 <input type="text" id="name" class="form-control" placeholder="John Doe">
-                <div class="invalid-feedback">Your full name is required.</div>
+                <div class="invalid-feedback" id="nameFeedback">Your full name is required (3+ characters, letters only).</div>
               </div>
               <div class="mb-3">
                 <label for="email" class="form-label">Email address</label>
                 <input type="email" id="email" class="form-control" placeholder="name@example.com">
-                <div class="invalid-feedback">Enter a valid email address.</div>
+                <div class="invalid-feedback" id="emailFeedback">Enter a valid email address (e.g., name@example.com).</div>
               </div>
               <div class="mb-3">
                 <label for="password" class="form-label">Password</label>
                 <input type="password" id="password" class="form-control" placeholder="Minimum 6 characters">
-                <div class="invalid-feedback">Password must be at least 6 characters.</div>
+                <div class="password-strength" id="strengthBar" style="display:none;"></div>
+                <div class="strength-text" id="strengthText" style="display:none;"></div>
+                <div class="invalid-feedback" id="passwordFeedback">Password must be at least 6 characters.</div>
+                <small class="form-text text-muted d-block mt-2">
+                  💡 Tip: Use uppercase, lowercase, numbers, and symbols for a stronger password.
+                </small>
               </div>
               <div class="mb-3">
                 <label for="confirmPassword" class="form-label">Confirm password</label>
                 <input type="password" id="confirmPassword" class="form-control" placeholder="Confirm your password">
-                <div class="invalid-feedback">Passwords must match.</div>
+                <div class="invalid-feedback" id="confirmFeedback">Passwords must match.</div>
               </div>
               <button type="submit" class="btn btn-primary w-100">Register</button>
             </form>
@@ -77,40 +97,266 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script>
     const registerForm = document.getElementById('registerForm');
+    const nameInput = document.getElementById('name');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirmPassword');
+    const strengthBar = document.getElementById('strengthBar');
+    const strengthText = document.getElementById('strengthText');
+
+    // Regular expressions for validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const nameRegex = /^[a-zA-Z\s]{3,}$/;
+
+    // Name validation with real-time feedback
+    nameInput.addEventListener('blur', function () {
+      validateName();
+    });
+
+    nameInput.addEventListener('input', function () {
+      if (this.classList.contains('is-invalid')) {
+        validateName();
+      }
+    });
+
+    function validateName() {
+      const name = nameInput.value.trim();
+      const nameFeedback = document.getElementById('nameFeedback');
+
+      if (name === '') {
+        nameInput.classList.add('is-invalid');
+        nameInput.classList.remove('is-valid');
+        nameFeedback.textContent = 'Full name is required.';
+        return false;
+      }
+
+      if (name.length < 3) {
+        nameInput.classList.add('is-invalid');
+        nameInput.classList.remove('is-valid');
+        nameFeedback.textContent = `Name must be at least 3 characters (${name.length}/3).`;
+        return false;
+      }
+
+      if (!nameRegex.test(name)) {
+        nameInput.classList.add('is-invalid');
+        nameInput.classList.remove('is-valid');
+        nameFeedback.textContent = 'Name can only contain letters and spaces.';
+        return false;
+      }
+
+      nameInput.classList.remove('is-invalid');
+      nameInput.classList.add('is-valid');
+      return true;
+    }
+
+    // Email validation with real-time feedback
+    emailInput.addEventListener('blur', function () {
+      validateEmail();
+    });
+
+    emailInput.addEventListener('input', function () {
+      if (this.classList.contains('is-invalid')) {
+        validateEmail();
+      }
+    });
+
+    function validateEmail() {
+      const email = emailInput.value.trim();
+      const emailFeedback = document.getElementById('emailFeedback');
+
+      if (email === '') {
+        emailInput.classList.add('is-invalid');
+        emailInput.classList.remove('is-valid');
+        emailFeedback.textContent = 'Email address is required.';
+        return false;
+      }
+
+      if (!emailRegex.test(email)) {
+        emailInput.classList.add('is-invalid');
+        emailInput.classList.remove('is-valid');
+        emailFeedback.textContent = 'Please enter a valid email address (e.g., name@example.com).';
+        return false;
+      }
+
+      emailInput.classList.remove('is-invalid');
+      emailInput.classList.add('is-valid');
+      return true;
+    }
+
+    // Password strength calculator
+    function calculatePasswordStrength(password) {
+      let strength = 0;
+      
+      if (password.length >= 6) strength++;
+      if (password.length >= 8) strength++;
+      if (password.length >= 12) strength++;
+      if (/[a-z]/.test(password)) strength++;
+      if (/[A-Z]/.test(password)) strength++;
+      if (/[0-9]/.test(password)) strength++;
+      if (/[^a-zA-Z0-9]/.test(password)) strength++;
+      
+      return strength;
+    }
+
+    // Password validation with strength indicator
+    passwordInput.addEventListener('input', function () {
+      const password = this.value;
+      const strength = calculatePasswordStrength(password);
+
+      if (password.length > 0) {
+        strengthBar.style.display = 'block';
+        strengthText.style.display = 'block';
+
+        // Update strength bar and text
+        strengthBar.className = 'password-strength';
+        strengthText.className = 'strength-text';
+
+        if (strength < 2) {
+          strengthBar.classList.add('strength-weak');
+          strengthText.innerHTML = '<span class="strength-weak-text">🔴 Very Weak</span>';
+        } else if (strength < 3) {
+          strengthBar.classList.add('strength-fair');
+          strengthText.innerHTML = '<span class="strength-fair-text">🟠 Weak</span>';
+        } else if (strength < 4) {
+          strengthBar.classList.add('strength-good');
+          strengthText.innerHTML = '<span class="strength-good-text">🟡 Fair</span>';
+        } else if (strength < 5) {
+          strengthBar.classList.add('strength-strong');
+          strengthText.innerHTML = '<span class="strength-strong-text">🟢 Good</span>';
+        } else {
+          strengthBar.classList.add('strength-very-strong');
+          strengthText.innerHTML = '<span class="strength-very-strong-text">🟢 Strong</span>';
+        }
+      } else {
+        strengthBar.style.display = 'none';
+        strengthText.style.display = 'none';
+      }
+
+      // Validate on input if previously invalid
+      if (this.classList.contains('is-invalid')) {
+        validatePassword();
+      }
+
+      // Check confirm password if it has a value
+      if (confirmPasswordInput.value) {
+        validateConfirmPassword();
+      }
+    });
+
+    passwordInput.addEventListener('blur', function () {
+      validatePassword();
+    });
+
+    function validatePassword() {
+      const password = passwordInput.value.trim();
+      const passwordFeedback = document.getElementById('passwordFeedback');
+
+      if (password === '') {
+        passwordInput.classList.add('is-invalid');
+        passwordInput.classList.remove('is-valid');
+        passwordFeedback.textContent = 'Password is required.';
+        return false;
+      }
+
+      if (password.length < 6) {
+        passwordInput.classList.add('is-invalid');
+        passwordInput.classList.remove('is-valid');
+        passwordFeedback.textContent = `Password must be at least 6 characters (${password.length}/6).`;
+        return false;
+      }
+
+      passwordInput.classList.remove('is-invalid');
+      passwordInput.classList.add('is-valid');
+      return true;
+    }
+
+    // Confirm password validation with real-time feedback
+    confirmPasswordInput.addEventListener('input', function () {
+      if (this.classList.contains('is-invalid')) {
+        validateConfirmPassword();
+      }
+    });
+
+    confirmPasswordInput.addEventListener('blur', function () {
+      validateConfirmPassword();
+    });
+
+    function validateConfirmPassword() {
+      const password = passwordInput.value.trim();
+      const confirmPassword = confirmPasswordInput.value.trim();
+      const confirmFeedback = document.getElementById('confirmFeedback');
+
+      if (confirmPassword === '') {
+        confirmPasswordInput.classList.add('is-invalid');
+        confirmPasswordInput.classList.remove('is-valid');
+        confirmFeedback.textContent = 'Please confirm your password.';
+        return false;
+      }
+
+      if (password !== confirmPassword) {
+        confirmPasswordInput.classList.add('is-invalid');
+        confirmPasswordInput.classList.remove('is-valid');
+        confirmFeedback.textContent = 'Passwords do not match.';
+        return false;
+      }
+
+      confirmPasswordInput.classList.remove('is-invalid');
+      confirmPasswordInput.classList.add('is-valid');
+      return true;
+    }
+
+    // Form submission
     registerForm.addEventListener('submit', function (event) {
       event.preventDefault();
-      const name = document.getElementById('name');
-      const email = document.getElementById('email');
-      const password = document.getElementById('password');
-      const confirmPassword = document.getElementById('confirmPassword');
-      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-      const validName = name.value.trim().length >= 3;
-      const validEmail = emailPattern.test(email.value.trim());
-      const validPassword = password.value.trim().length >= 6;
-      const passwordsMatch = password.value === confirmPassword.value && validPassword;
+      // Clear previous validation styles
+      nameInput.classList.remove('is-valid', 'is-invalid');
+      emailInput.classList.remove('is-valid', 'is-invalid');
+      passwordInput.classList.remove('is-valid', 'is-invalid');
+      confirmPasswordInput.classList.remove('is-valid', 'is-invalid');
 
-      name.classList.toggle('is-invalid', !validName);
-      email.classList.toggle('is-invalid', !validEmail);
-      password.classList.toggle('is-invalid', !validPassword);
-      confirmPassword.classList.toggle('is-invalid', !passwordsMatch);
+      // Validate all fields
+      const validName = validateName();
+      const validEmail = validateEmail();
+      const validPassword = validatePassword();
+      const validConfirmPassword = validateConfirmPassword();
 
-      if (!validName || !validEmail || !validPassword || !passwordsMatch) {
+      if (!validName || !validEmail || !validPassword || !validConfirmPassword) {
         return;
       }
 
+      // Check if email already exists
+      const name = nameInput.value.trim();
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
       const users = JSON.parse(localStorage.getItem('autolux-users') || '[]');
-      const existing = users.some(user => user.email.toLowerCase() === email.value.trim().toLowerCase());
-      if (existing) {
-        alert('An account already exists with that email address. Please login or use a different email.');
+
+      const emailExists = users.some(user => user.email.toLowerCase() === email.toLowerCase());
+      if (emailExists) {
+        emailInput.classList.add('is-invalid');
+        const emailFeedback = document.getElementById('emailFeedback');
+        emailFeedback.textContent = '⚠️ An account already exists with this email address. Please login or use a different email.';
         return;
       }
 
-      users.push({ name: name.value.trim(), email: email.value.trim(), password: password.value });
+      // Save new user
+      users.push({ name: name, email: email, password: password });
       localStorage.setItem('autolux-users', JSON.stringify(users));
-      localStorage.setItem('autolux-current-user', JSON.stringify({ name: name.value.trim(), email: email.value.trim() }));
-      alert('Registration successful! Redirecting to your profile.');
+      localStorage.setItem('autolux-current-user', JSON.stringify({ name: name, email: email }));
+
+      // Show success message
+      alert('✅ Registration successful! Your account has been created. Redirecting to your profile...');
       window.location.href = 'profile.html';
+    });
+
+    // Clear validation on page load
+    window.addEventListener('load', function () {
+      nameInput.classList.remove('is-valid', 'is-invalid');
+      emailInput.classList.remove('is-valid', 'is-invalid');
+      passwordInput.classList.remove('is-valid', 'is-invalid');
+      confirmPasswordInput.classList.remove('is-valid', 'is-invalid');
+      strengthBar.style.display = 'none';
+      strengthText.style.display = 'none';
     });
   </script>
 </body>
