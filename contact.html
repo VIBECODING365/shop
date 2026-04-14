@@ -3,39 +3,35 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Contact AutoLux Cars for sales inquiries, support, and assistance. Responsive contact form with validation.">
   <title>AutoLux Cars | Contact</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    body { background: #eef2ff; color: #1e293b; }
-    .navbar { background: #111827; }
-    .navbar-brand, .nav-link { color: #fff !important; }
-    .card { border-radius: 20px; }
-    .contact-card { background: #fff; box-shadow: 0 20px 45px rgba(15, 23, 42, .1); }
-    .form-control:focus { box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, .25); }
-    footer { background: #111827; color: #cbd5e1; padding: 2rem 0; }
-  </style>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <nav class="navbar navbar-expand-lg navbar-dark shadow-sm sticky-top">
-    <div class="container">
-      <a class="navbar-brand fw-bold" href="index.html">AutoLux Cars</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu" aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navMenu">
-        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-          <li class="nav-item"><a class="nav-link active" href="contact.html">Contact</a></li>
-          <li class="nav-item"><a class="nav-link" href="login.html">Login</a></li>
-          <li class="nav-item"><a class="nav-link" href="register.html">Register</a></li>
-          <li class="nav-item"><a class="nav-link" href="profile.html">Profile</a></li>
-          <li class="nav-item"><a class="nav-link" href="cart.html">My Cart</a></li>
-        </ul>
+  <header>
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top" role="navigation" aria-label="Main navigation">
+      <div class="container">
+        <a class="navbar-brand fw-bold" href="index.html" aria-label="AutoLux Cars - Go to home">AutoLux Cars</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu" aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation menu">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navMenu">
+          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+            <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+            <li class="nav-item"><a class="nav-link active" href="contact.html">Contact</a></li>
+            <li class="nav-item"><a class="nav-link" href="login.html">Login</a></li>
+            <li class="nav-item"><a class="nav-link" href="register.html">Register</a></li>
+            <li class="nav-item"><a class="nav-link" href="profile.html">Profile</a></li>
+            <li class="nav-item"><a class="nav-link" href="cart.html">My Cart</a></li>
+          </ul>
+        </div>
       </div>
-    </div>
-  </nav>
+    </nav>
+  </header>
 
-  <section class="py-5">
+  <main>
+    <section class="py-5">
     <div class="container">
       <div class="row align-items-center gy-4">
         <div class="col-lg-6">
@@ -43,14 +39,14 @@
           <p class="lead text-muted">Our team is ready to answer questions about vehicles, financing, delivery and account support.</p>
           <div class="mt-4">
             <p class="mb-1"><strong>Office:</strong> 1234 Luxury Drive, Suite 210</p>
-            <p class="mb-1"><strong>Email:</strong> support@autoluxcars.com</p>
-            <p class="mb-0"><strong>Phone:</strong> +1 555 012 3456</p>
+            <p class="mb-1"><strong>Email:</strong> <a href="mailto:support@autoluxcars.com" class="text-decoration-none">support@autoluxcars.com</a></p>
+            <p class="mb-0"><strong>Phone:</strong> <a href="tel:+15550123456" class="text-decoration-none">+1 555 012 3456</a></p>
           </div>
         </div>
         <div class="col-lg-6">
           <div class="card contact-card p-4">
-            <h5 class="mb-4">Send a message</h5>
-            <form id="contactForm" novalidate>
+            <h5 class="card-title mb-4">Send a message</h5>
+            <form id="contactForm" novalidate aria-label="Contact form">
               <div class="mb-3">
                 <label for="fullName" class="form-label">Full name</label>
                 <input type="text" id="fullName" class="form-control" placeholder="Your name">
@@ -77,69 +73,69 @@
         </div>
       </div>
     </div>
-  </section>
+    </section>
 
-  <section class="container py-5">
-    <div class="row gy-4">
-      <div class="col-md-4">
-        <div class="p-4 bg-white rounded-4 shadow-sm h-100">
-          <h5>Sales inquiry</h5>
-          <p class="text-muted">Find the right car, schedule a test drive, or request a quote from our sales team.</p>
+    <section class="container py-5">
+      <div class="row gy-4">
+        <div class="col-md-4">
+          <div class="card feature-card p-4 h-100">
+            <h5 class="card-title">📞 Sales inquiry</h5>
+            <p class="card-text text-muted">Find the right car, schedule a test drive, or request a quote from our sales team.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card feature-card p-4 h-100">
+            <h5 class="card-title">🛡️ Customer support</h5>
+            <p class="card-text text-muted">Ask about warranties, vehicle history, financing, or delivery timelines.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card feature-card p-4 h-100">
+            <h5 class="card-title">👤 Account assistance</h5>
+            <p class="card-text text-muted">Need help with login, profile settings, or cart issues? We are here to help.</p>
+          </div>
         </div>
       </div>
-      <div class="col-md-4">
-        <div class="p-4 bg-white rounded-4 shadow-sm h-100">
-          <h5>Customer support</h5>
-          <p class="text-muted">Ask about warranties, vehicle history, financing, or delivery timelines.</p>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="p-4 bg-white rounded-4 shadow-sm h-100">
-          <h5>Account assistance</h5>
-          <p class="text-muted">Need help with login, profile settings, or cart issues? We are here to help.</p>
-        </div>
-      </div>
-    </div>
-  </section>
+    </section>
+  </main>
 
-  <footer>
+  <footer role="contentinfo">
     <div class="container text-center">
-      <p class="mb-0">Copyright © 2026 AutoLux Cars. Built with responsive HTML, CSS and JavaScript.</p>
+      <p class="mb-0">&copy; 2026 AutoLux Cars. All rights reserved.</p>
     </div>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="scripts.js"></script>
   <script>
-    function showValidation(input, valid) {
-      if (valid) {
-        input.classList.remove('is-invalid');
-        input.classList.add('is-valid');
-      } else {
-        input.classList.add('is-invalid');
-        input.classList.remove('is-valid');
-      }
-    }
+    const contactForm = document.getElementById('contactForm');
+    const nameInput = document.getElementById('fullName');
+    const emailInput = document.getElementById('contactEmail');
+    const subjectInput = document.getElementById('subject');
+    const messageInput = document.getElementById('message');
 
-    document.getElementById('contactForm').addEventListener('submit', function (event) {
+    contactForm.addEventListener('submit', function(event) {
       event.preventDefault();
-      const name = document.getElementById('fullName');
-      const email = document.getElementById('contactEmail');
-      const subject = document.getElementById('subject');
-      const message = document.getElementById('message');
-      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      const validName = name.value.trim().length >= 3;
-      const validEmail = emailPattern.test(email.value.trim());
-      const validSubject = subject.value.trim().length > 5;
-      const validMessage = message.value.trim().length > 15;
-      showValidation(name, validName);
-      showValidation(email, validEmail);
-      showValidation(subject, validSubject);
-      showValidation(message, validMessage);
+      const name = nameInput.value.trim();
+      const email = emailInput.value.trim();
+      const subject = subjectInput.value.trim();
+      const message = messageInput.value.trim();
+
+      const validName = Validator.validateName(name);
+      const validEmail = Validator.validateEmail(email);
+      const validSubject = subject.length > 5;
+      const validMessage = message.length > 15;
+
+      Validator.updateFieldState(nameInput, validName);
+      Validator.updateFieldState(emailInput, validEmail);
+      Validator.updateFieldState(subjectInput, validSubject);
+      Validator.updateFieldState(messageInput, validMessage);
+
       if (validName && validEmail && validSubject && validMessage) {
-        localStorage.setItem('autolux-contact', JSON.stringify({ name: name.value.trim(), email: email.value.trim(), subject: subject.value.trim(), message: message.value.trim(), date: new Date().toISOString() }));
-        alert('Thank you for your message! We will contact you soon.');
-        this.reset();
-        document.querySelectorAll('.form-control').forEach(el => el.classList.remove('is-valid'));
+        localStorage.setItem(CONFIG.STORAGE_KEYS.CONTACT, JSON.stringify({ name, email, subject, message, date: new Date().toISOString() }));
+        DOM.showNotification('✅ Thank you for your message! We will contact you soon.', 'success');
+        contactForm.reset();
+        document.querySelectorAll('.form-control').forEach(el => el.classList.remove('is-valid', 'is-invalid'));
       }
     });
   </script>
