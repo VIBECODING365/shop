@@ -7,6 +7,362 @@
   <title>AutoLux Cars | My Cart</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Checkout Modal Styles */
+    .checkout-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      z-index: 1040;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .checkout-overlay.active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .checkout-modal {
+      background: #fff;
+      border-radius: 24px;
+      width: 90%;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 25px 50px rgba(15, 23, 42, 0.2);
+      animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      padding: 0;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    .checkout-header {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #fff;
+      padding: 1.5rem;
+      border-radius: 24px 24px 0 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .checkout-header h2 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .close-checkout {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      transition: background 0.3s;
+    }
+
+    .close-checkout:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .checkout-content {
+      padding: 2rem;
+    }
+
+    .pricing-section {
+      background: #f8fafc;
+      padding: 1.5rem;
+      border-radius: 16px;
+      margin-bottom: 2rem;
+    }
+
+    .pricing-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .pricing-row:last-child {
+      border-bottom: none;
+    }
+
+    .pricing-label {
+      color: #6b7280;
+      font-size: 0.95rem;
+    }
+
+    .pricing-value {
+      font-weight: 600;
+      color: #0f172a;
+      font-size: 1rem;
+    }
+
+    .pricing-row.total {
+      padding: 1rem 0;
+      margin-top: 0.5rem;
+      border-top: 2px solid #0ea5e9;
+    }
+
+    .pricing-row.total .pricing-label {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .pricing-row.total .pricing-value {
+      font-size: 1.5rem;
+      color: #0ea5e9;
+    }
+
+    .payment-form-section {
+      margin-bottom: 2rem;
+    }
+
+    .payment-form-section h4 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      color: #0f172a;
+    }
+
+    .card-input-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .card-input-group.full {
+      grid-template-columns: 1fr;
+    }
+
+    .form-group-custom {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-group-custom label {
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+      color: #0f172a;
+    }
+
+    .form-group-custom input {
+      padding: 0.75rem 1rem;
+      border: 2px solid #e5e7eb;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      transition: all 0.3s;
+    }
+
+    .form-group-custom input:focus {
+      outline: none;
+      border-color: #0ea5e9;
+      box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+    }
+
+    .form-group-custom input.error {
+      border-color: #ef4444;
+    }
+
+    .error-message {
+      color: #ef4444;
+      font-size: 0.8rem;
+      margin-top: 0.4rem;
+      display: none;
+    }
+
+    .error-message.show {
+      display: block;
+    }
+
+    .checkout-button-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .checkout-button-group button {
+      padding: 1rem;
+      font-weight: 600;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 1rem;
+    }
+
+    .btn-cancel-checkout {
+      background: #e5e7eb;
+      color: #0f172a;
+    }
+
+    .btn-cancel-checkout:hover {
+      background: #d1d5db;
+    }
+
+    .btn-pay {
+      background: #0ea5e9;
+      color: #fff;
+    }
+
+    .btn-pay:hover {
+      background: #38bdf8;
+      transform: translateY(-2px);
+    }
+
+    .btn-pay.loading {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 1rem;
+      height: 1rem;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-right: 0.5rem;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .success-message {
+      background: #f0fdf4;
+      border: 2px solid #22c55e;
+      color: #166534;
+      padding: 1.5rem;
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
+      display: none;
+      text-align: center;
+    }
+
+    .success-message.show {
+      display: block;
+      animation: slideDown 0.4s ease-out;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .empty-cart-message {
+      background: #fef2f2;
+      border: 2px solid #ef4444;
+      color: #991b1b;
+      padding: 1.5rem;
+      border-radius: 12px;
+      text-align: center;
+      margin-bottom: 1.5rem;
+      display: none;
+    }
+
+    .empty-cart-message.show {
+      display: block;
+    }
+
+    .order-items-summary {
+      background: #f1f5f9;
+      padding: 1.5rem;
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .order-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .order-item:last-child {
+      border-bottom: none;
+    }
+
+    .order-item-name {
+      font-weight: 600;
+      color: #0f172a;
+    }
+
+    .order-item-price {
+      color: #6b7280;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 576px) {
+      .checkout-modal {
+        width: 95%;
+        margin: 1rem;
+      }
+
+      .checkout-content {
+        padding: 1.5rem;
+      }
+
+      .card-input-group {
+        grid-template-columns: 1fr;
+      }
+
+      .checkout-button-group {
+        grid-template-columns: 1fr;
+      }
+
+      .checkout-header h2 {
+        font-size: 1.25rem;
+      }
+    }
+  </style>
 </head>
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark sticky-top shadow-sm">
@@ -41,17 +397,131 @@
           <h5 class="fw-bold mb-3">Order summary</h5>
           <div id="orderSummary" class="mb-4"></div>
           <button id="clearCart" class="btn btn-clear w-100 mb-3">Clear cart</button>
-          <a href="checkout.html" class="btn btn-primary w-100">Proceed to checkout</a>
+          <button id="checkoutBtn" class="btn btn-primary w-100" onclick="openCheckout()">Proceed to checkout</button>
         </div>
       </div>
     </div>
   </section>
+
+  <!-- Checkout Modal Overlay -->
+  <div class="checkout-overlay" id="checkoutOverlay">
+    <div class="checkout-modal" id="checkoutModal">
+      <!-- Checkout Header -->
+      <div class="checkout-header">
+        <h2>Secure Checkout</h2>
+        <button type="button" class="close-btn" onclick="closeCheckout()" aria-label="Close checkout" style="background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; padding: 0; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+          <span>&times;</span>
+        </button>
+      </div>
+
+      <!-- Checkout Content -->
+      <div class="checkout-content">
+        <!-- Success Message (Hidden by default) -->
+        <div class="success-message" id="successMessage" style="display: none;">
+          <strong>✓ Payment Successful!</strong>
+          <p>Your order has been confirmed. Thank you for your purchase!</p>
+        </div>
+
+        <!-- Empty Cart Warning (Hidden by default) -->
+        <div class="empty-cart-message" id="emptyCartWarning" style="display: none;">
+          <strong>⚠ Your cart is empty</strong>
+          <p>Please add items to your cart before checkout.</p>
+        </div>
+
+        <!-- Order Items Summary -->
+        <div class="order-items-summary" id="orderItemsSummary"></div>
+
+        <!-- Pricing Section -->
+        <div class="pricing-section">
+          <div class="pricing-row">
+            <span>Subtotal</span>
+            <span id="subtotalValue">$0.00</span>
+          </div>
+          <div class="pricing-row">
+            <span>VAT (10%)</span>
+            <span id="vatValue">$0.00</span>
+          </div>
+          <div class="pricing-row total">
+            <span><strong>Total</strong></span>
+            <span id="totalValue"><strong>$0.00</strong></span>
+          </div>
+        </div>
+
+        <!-- Payment Form Section -->
+        <div class="payment-form-section">
+          <h4>Payment details</h4>
+          
+          <div class="form-group-custom">
+            <label for="cardNumber">Card Number</label>
+            <input 
+              type="text" 
+              id="cardNumber" 
+              class="form-control" 
+              placeholder="1234 5678 9012 3456" 
+              maxlength="19"
+              inputmode="numeric"
+            >
+            <div class="error-message" id="cardNumberError"></div>
+          </div>
+
+          <div class="form-group-custom">
+            <label for="cardholderName">Cardholder Name</label>
+            <input 
+              type="text" 
+              id="cardholderName" 
+              class="form-control" 
+              placeholder="John Doe"
+            >
+            <div class="error-message" id="cardholderNameError"></div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group-custom">
+              <label for="expiryDate">Expiry Date</label>
+              <input 
+                type="text" 
+                id="expiryDate" 
+                class="form-control" 
+                placeholder="MM/YY"
+                maxlength="5"
+              >
+              <div class="error-message" id="expiryDateError"></div>
+            </div>
+            <div class="form-group-custom">
+              <label for="cvv">CVV</label>
+              <input 
+                type="text" 
+                id="cvv" 
+                class="form-control" 
+                placeholder="123"
+                maxlength="4"
+                inputmode="numeric"
+              >
+              <div class="error-message" id="cvvError"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Checkout Button Group -->
+        <div class="checkout-button-group">
+          <button type="button" class="btn btn-cancel-checkout" onclick="closeCheckout()">
+            Cancel
+          </button>
+          <button type="button" class="btn btn-pay" id="payBtn" onclick="handlePaymentSubmit()">
+            <span id="payBtnText">Pay now</span>
+            <span class="spinner" id="payBtnSpinner" style="display: none;"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <footer class="text-center py-4 text-muted">
     <div class="container">AutoLux Cars shopping cart with localStorage persistence.</div>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="scripts.js"></script>
   <script>
     const productList = [
       { id: 1, model: 'Aurora GT', price: 79999, image: 'https://images.pexels.com/photos/170811/pexels-photo-170811.jpeg?auto=compress&cs=tinysrgb&w=900' },
@@ -59,6 +529,7 @@
       { id: 3, model: 'Zenith EV', price: 88999, image: 'https://images.pexels.com/photos/358070/pexels-photo-358070.jpeg?auto=compress&cs=tinysrgb&w=900' }
     ];
 
+    // ==================== Cart Management ====================
     function getCart() {
       return JSON.parse(localStorage.getItem('autolux-cart') || '[]');
     }
@@ -84,11 +555,13 @@
       const cartItemsContainer = document.getElementById('cartItems');
       const summary = document.getElementById('orderSummary');
       cartItemsContainer.innerHTML = '';
+      
       if (cart.length === 0) {
         cartItemsContainer.innerHTML = '<p class="text-muted">Your cart is empty. Browse the home page and add premium cars to your cart.</p>';
         summary.innerHTML = '<p class="text-muted">No items selected yet.</p>';
         return;
       }
+      
       let total = 0;
       cart.forEach(item => {
         const product = productList.find(p => p.id === item.id);
@@ -115,6 +588,256 @@
       `;
     }
 
+    // ==================== Checkout Functions ====================
+    function calculateSubtotal() {
+      const cart = getCart();
+      if (cart.length === 0) return 0;
+      return cart.reduce((sum, item) => {
+        const product = productList.find(p => p.id === item.id);
+        return sum + (product ? product.price * item.quantity : 0);
+      }, 0);
+    }
+
+    function calculateVAT(subtotal) {
+      return subtotal * 0.10;
+    }
+
+    function calculateTotal(subtotal, vat) {
+      return subtotal + vat;
+    }
+
+    function validateCard(cardNumber) {
+      const cleaned = cardNumber.replace(/\s+/g, '');
+      const regex = /^\d{16}$/;
+      return regex.test(cleaned);
+    }
+
+    function validateCardholderName(name) {
+      return name.trim().length > 0 && /^[a-zA-Z\s]+$/.test(name);
+    }
+
+    function validateExpiry(expiry) {
+      const regex = /^(0[1-9]|1[0-2])\/\d{2}$/;
+      if (!regex.test(expiry)) return false;
+      
+      const [month, year] = expiry.split('/');
+      const currentYear = new Date().getFullYear();
+      const currentMonth = new Date().getMonth() + 1;
+      const fullYear = parseInt('20' + year);
+      
+      if (fullYear < currentYear) return false;
+      if (fullYear === currentYear && parseInt(month) < currentMonth) return false;
+      
+      return true;
+    }
+
+    function validateCVV(cvv) {
+      const regex = /^\d{3,4}$/;
+      return regex.test(cvv);
+    }
+
+    function clearErrorMessages() {
+      document.getElementById('cardNumberError').textContent = '';
+      document.getElementById('cardNumberError').classList.remove('show');
+      document.getElementById('cardholderNameError').textContent = '';
+      document.getElementById('cardholderNameError').classList.remove('show');
+      document.getElementById('expiryDateError').textContent = '';
+      document.getElementById('expiryDateError').classList.remove('show');
+      document.getElementById('cvvError').textContent = '';
+      document.getElementById('cvvError').classList.remove('show');
+      
+      document.getElementById('cardNumber').classList.remove('error');
+      document.getElementById('cardholderName').classList.remove('error');
+      document.getElementById('expiryDate').classList.remove('error');
+      document.getElementById('cvv').classList.remove('error');
+    }
+
+    function showError(fieldId, message) {
+      document.getElementById(fieldId).textContent = message;
+      document.getElementById(fieldId).classList.add('show');
+      const inputId = fieldId.replace('Error', '');
+      document.getElementById(inputId)?.classList.add('error');
+    }
+
+    function populateCheckoutModal() {
+      const cart = getCart();
+      const overlay = document.getElementById('checkoutOverlay');
+      const emptyWarning = document.getElementById('emptyCartWarning');
+      const paymentForm = document.querySelector('.payment-form-section');
+      const orderSummary = document.getElementById('orderItemsSummary');
+      
+      if (cart.length === 0) {
+        emptyWarning.style.display = 'block';
+        paymentForm.style.display = 'none';
+        return;
+      }
+      
+      emptyWarning.style.display = 'none';
+      paymentForm.style.display = 'block';
+      
+      // Populate order items
+      orderSummary.innerHTML = '';
+      cart.forEach(item => {
+        const product = productList.find(p => p.id === item.id);
+        if (!product) return;
+        const div = document.createElement('div');
+        div.className = 'order-item';
+        div.innerHTML = `
+          <span class="order-item-name">${product.model}</span>
+          <span class="order-item-price">Qty: ${item.quantity} × $${product.price.toLocaleString()} = <strong>$${(product.price * item.quantity).toLocaleString()}</strong></span>
+        `;
+        orderSummary.appendChild(div);
+      });
+      
+      // Update pricing
+      const subtotal = calculateSubtotal();
+      const vat = calculateVAT(subtotal);
+      const total = calculateTotal(subtotal, vat);
+      
+      document.getElementById('subtotalValue').textContent = '$' + subtotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      document.getElementById('vatValue').textContent = '$' + vat.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      document.getElementById('totalValue').textContent = '$' + total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function openCheckout() {
+      const overlay = document.getElementById('checkoutOverlay');
+      const successMsg = document.getElementById('successMessage');
+      
+      // Reset success message
+      successMsg.style.display = 'none';
+      
+      populateCheckoutModal();
+      clearErrorMessages();
+      
+      overlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      
+      // Focus on first input if cart is not empty
+      if (getCart().length > 0) {
+        setTimeout(() => document.getElementById('cardNumber').focus(), 300);
+      }
+    }
+
+    function closeCheckout() {
+      const overlay = document.getElementById('checkoutOverlay');
+      overlay.classList.remove('active');
+      document.body.style.overflow = 'auto';
+      clearErrorMessages();
+    }
+
+    function handlePaymentSubmit() {
+      clearErrorMessages();
+      
+      const cardNumber = document.getElementById('cardNumber').value;
+      const cardholderName = document.getElementById('cardholderName').value;
+      const expiryDate = document.getElementById('expiryDate').value;
+      const cvv = document.getElementById('cvv').value;
+      
+      let hasError = false;
+      
+      // Validate card number
+      if (!validateCard(cardNumber)) {
+        showError('cardNumberError', 'Please enter a valid 16-digit card number');
+        hasError = true;
+      }
+      
+      // Validate cardholder name
+      if (!validateCardholderName(cardholderName)) {
+        showError('cardholderNameError', 'Please enter a valid cardholder name (letters only)');
+        hasError = true;
+      }
+      
+      // Validate expiry date
+      if (!validateExpiry(expiryDate)) {
+        showError('expiryDateError', 'Please enter a valid expiry date (MM/YY format, not expired)');
+        hasError = true;
+      }
+      
+      // Validate CVV
+      if (!validateCVV(cvv)) {
+        showError('cvvError', 'Please enter a valid CVV (3-4 digits)');
+        hasError = true;
+      }
+      
+      if (hasError) return;
+      
+      // Process payment
+      processPayment();
+    }
+
+    function processPayment() {
+      const payBtn = document.getElementById('payBtn');
+      const payBtnText = document.getElementById('payBtnText');
+      const payBtnSpinner = document.getElementById('payBtnSpinner');
+      
+      // Show loading state
+      payBtn.disabled = true;
+      payBtn.classList.add('loading');
+      payBtnText.style.display = 'none';
+      payBtnSpinner.style.display = 'inline-block';
+      
+      // Simulate payment processing (2 second delay)
+      setTimeout(() => {
+        // Reset button
+        payBtn.disabled = false;
+        payBtn.classList.remove('loading');
+        payBtnText.style.display = 'inline';
+        payBtnSpinner.style.display = 'none';
+        
+        // Show success message
+        const successMsg = document.getElementById('successMessage');
+        const paymentForm = document.querySelector('.payment-form-section');
+        const orderItemsSummary = document.getElementById('orderItemsSummary');
+        const pricingSection = document.querySelector('.pricing-section');
+        
+        successMsg.style.display = 'block';
+        paymentForm.style.display = 'none';
+        orderItemsSummary.style.display = 'none';
+        pricingSection.style.display = 'none';
+        
+        // Clear cart
+        localStorage.setItem('autolux-cart', JSON.stringify([]));
+        
+        // Close modal after 3 seconds
+        setTimeout(() => {
+          closeCheckout();
+          renderCart();
+          // Reset form and displays for next checkout
+          document.getElementById('cardNumber').value = '';
+          document.getElementById('cardholderName').value = '';
+          document.getElementById('expiryDate').value = '';
+          document.getElementById('cvv').value = '';
+          paymentForm.style.display = 'block';
+          orderItemsSummary.style.display = 'block';
+          pricingSection.style.display = 'block';
+        }, 2000);
+      }, 2000);
+    }
+
+    // ==================== Close overlay on backdrop click ====================
+    document.getElementById('checkoutOverlay')?.addEventListener('click', (e) => {
+      if (e.target.id === 'checkoutOverlay') {
+        closeCheckout();
+      }
+    });
+
+    // ==================== Format card number input ====================
+    document.getElementById('cardNumber')?.addEventListener('input', (e) => {
+      let value = e.target.value.replace(/\s+/g, '');
+      let formatted = value.replace(/(\d{4})/g, '$1 ').trim();
+      e.target.value = formatted;
+    });
+
+    // ==================== Auto-format expiry date ====================
+    document.getElementById('expiryDate')?.addEventListener('input', (e) => {
+      let value = e.target.value.replace(/\D/g, '');
+      if (value.length >= 2) {
+        value = value.substring(0, 2) + '/' + value.substring(2, 4);
+      }
+      e.target.value = value;
+    });
+
+    // Initialize
     document.getElementById('clearCart').addEventListener('click', clearCartItems);
     renderCart();
   </script>
